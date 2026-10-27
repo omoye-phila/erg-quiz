@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)file:///C:/Users/usenoe/Downloads/ERG_FullQuiz_Standalone.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERG Knowledge Check — PDSE All-Staff</title>
+<style>
+  :root {
+    --blue: #2176D2;
+    --dark-blue: #0C3D6E;
+    --light-blue: #E6F1FB;
+    --sky: #95CAFE;
+    --orange: #FFAB40;
+    --green: #4CAF50;
+    --dark: #1A2E35;
+    --gray: #595959;
+    --white: #FFFFFF;
+    --red: #D32F2F;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--dark-blue);
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    background: var(--dark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-badge {
+    background: var(--blue);
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .topbar-title { font-weight: 700; font-size: 14px; letter-spacing: .3px; }
+  .topbar-subtitle { color: var(--sky); font-size: 12px; }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #aaa; }
+  .progress-bar { width: 160px; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--blue); border-radius: 3px; transition: width .4s ease; }
+
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.35);
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, var(--dark-blue) 0%, #1a4a7a 100%);
+    padding: 20px 32px 16px;
+    color: white;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .q-num {
+    background: var(--blue);
+    color: white;
+    font-weight: 800;
+    font-size: 18px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    border: 2px solid rgba(255,255,255,.3);
+  }
+  .q-meta { flex: 1; }
+  .q-category {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .q-tag {
+    background: rgba(255,255,255,.15);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    letter-spacing: .8px;
+  }
+  .q-text {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: white;
+  }
+
+  .options-grid {
+    padding: 22px 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 13px 16px;
+    border: 2px solid #dde6f0;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: all .18s ease;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--blue);
+    background: var(--light-blue);
+    transform: translateX(3px);
+  }
+  .option-letter {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--light-blue);
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid var(--blue);
+    transition: all .18s ease;
+  }
+  .option-text { font-size: 13.5px; line-height: 1.55; color: var(--dark); padding-top: 3px; }
+
+  .option-btn.correct { border-color: var(--green); background: #E8F5E9; }
+  .option-btn.correct .option-letter { background: var(--green); color: white; border-color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: #FFEBEE; opacity: .75; }
+  .option-btn.wrong .option-letter { background: var(--red); color: white; border-color: var(--red); }
+  .option-btn.dim { opacity: .4; }
+  .option-btn:disabled { cursor: default; transform: none; }
+
+  .feedback {
+    margin: 0 32px 18px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    display: none;
+  }
+  .feedback.correct-fb { background: #E8F5E9; border-left: 4px solid var(--green); color: #1B5E20; display: block; }
+  .feedback.wrong-fb   { background: #FFF8E1; border-left: 4px solid var(--orange); color: #5D4037; display: block; }
+  .feedback strong { font-weight: 700; }
+
+  /* ERG TEST BADGE */
+  .erg-test-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--light-blue);
+    border: 1px solid var(--blue);
+    color: var(--dark-blue);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin: 0 32px 16px;
+    width: fit-content;
+  }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px 22px;
+    border-top: 1px solid #eee;
+  }
+  .nav-btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: all .18s;
+    border: none;
+  }
+  .btn-primary { background: var(--blue); color: white; }
+  .btn-primary:hover { background: var(--dark-blue); }
+  .btn-disabled { opacity: .35; cursor: default; pointer-events: none; }
+
+  /* SCORE */
+  .score-screen {
+    display: none;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.35);
+    width: 100%; max-width: 900px;
+    padding: 44px 40px;
+    text-align: center;
+  }
+  .score-icon { font-size: 60px; margin-bottom: 14px; }
+  .score-headline { font-size: 26px; font-weight: 800; color: var(--dark-blue); margin-bottom: 6px; }
+  .score-sub { font-size: 15px; color: var(--gray); margin-bottom: 28px; line-height: 1.5; }
+  .score-big { font-size: 68px; font-weight: 900; color: var(--blue); line-height: 1; margin-bottom: 4px; }
+  .score-label { font-size: 13px; color: var(--gray); margin-bottom: 32px; }
+  .score-dots { display: flex; gap: 9px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+  .score-dot {
+    width: 34px; height: 34px; border-radius: 50%;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; color: white;
+  }
+  .dot-correct { background: var(--green); }
+  .dot-wrong   { background: var(--red); }
+
+  .score-breakdown {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 28px; text-align: left;
+  }
+  .breakdown-tile {
+    background: var(--light-blue);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .breakdown-tile .bt-cat { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: .8px; text-transform: uppercase; margin-bottom: 4px; }
+  .breakdown-tile .bt-val { font-size: 20px; font-weight: 900; color: var(--dark-blue); }
+  .breakdown-tile .bt-sub { font-size: 12px; color: var(--gray); }
+
+  .score-msg { background: var(--light-blue); border-radius: 10px; padding: 18px 22px; font-size: 14px; color: var(--dark-blue); line-height: 1.6; margin-bottom: 24px; text-align: left; }
+  .restart-btn { padding: 12px 32px; background: var(--dark-blue); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+  .restart-btn:hover { background: var(--blue); }
+
+  /* INTRO */
+  .intro-screen {
+    background: white; border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.35);
+    width: 100%; max-width: 900px; overflow: hidden;
+  }
+  .intro-header {
+    background: linear-gradient(135deg, var(--dark-blue), #1a4a7a);
+    padding: 32px 40px; color: white; text-align: center;
+  }
+  .intro-header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .intro-header p { font-size: 14px; color: var(--sky); }
+  .intro-body { padding: 28px 40px; }
+  .intro-body p { font-size: 14.5px; color: var(--dark); line-height: 1.6; margin-bottom: 14px; }
+  .intro-tests {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px; margin: 20px 0 24px;
+  }
+  .test-tile {
+    background: var(--light-blue); border-radius: 10px; padding: 14px;
+    border-left: 4px solid var(--blue);
+  }
+  .test-tile .tt-name { font-size: 12px; font-weight: 800; color: var(--dark-blue); margin-bottom: 4px; }
+  .test-tile .tt-desc { font-size: 12px; color: var(--gray); line-height: 1.4; }
+  .intro-meta { display: flex; gap: 20px; margin-bottom: 24px; }
+  .im-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray); }
+  .im-icon { font-size: 18px; }
+  .start-btn {
+    width: 100%; padding: 15px;
+    background: var(--dark-blue); color: white;
+    border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif; transition: background .18s;
+  }
+  .start-btn:hover { background: var(--blue); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-badge">Knowledge Check</div>
+    <div>
+      <div class="topbar-title">Equitable Reporting Guide</div>
+      <div class="topbar-subtitle">PDSE All-Staff Presentation · Full Quiz</div>
+    </div>
+  </div>
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <span id="progressLabel">1 / 10</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- INTRO -->
+  <div class="intro-screen" id="introScreen">
+    <div class="intro-header">
+      <h1>ERG Knowledge Check</h1>
+      <p>Philadelphia Department of Human Services · PDSE All-Staff Training</p>
+    </div>
+    <div class="intro-body">
+      <p>You've learned the three core ERG tests. Now put them to work. Each question presents a real DHS documentation scenario — pick the response that best reflects equitable, accurate practice.</p>
+      <div class="intro-tests">
+        <div class="test-tile">
+          <div class="tt-name">📹 Video Camera Test</div>
+          <div class="tt-desc">Would a camera have captured this? Write only what you observed.</div>
+        </div>
+        <div class="test-tile">
+          <div class="tt-name">🔍 Source of the Problem</div>
+          <div class="tt-desc">Is the problem in the person — or in the system around them?</div>
+        </div>
+        <div class="test-tile">
+          <div class="tt-name">⏳ Wait &amp; See Test</div>
+          <div class="tt-desc">Are you documenting what happened, or prejudging what will?</div>
+        </div>
+      </div>
+      <div class="intro-meta">
+        <div class="im-item"><span class="im-icon">📝</span> 10 questions</div>
+        <div class="im-item"><span class="im-icon">⏱️</span> ~8 minutes</div>
+        <div class="im-item"><span class="im-icon">🏷️</span> 6 domains covered</div>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">Begin Knowledge Check →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ CARD -->
+  <div class="card" id="quizCard" style="display:none">
+    <div class="card-header">
+      <div class="q-num" id="qNum">1</div>
+      <div class="q-meta">
+        <div class="q-category" id="qCat"></div>
+        <div class="q-text" id="qText"></div>
+      </div>
+    </div>
+    <div id="ergTestBadge"></div>
+    <div class="options-grid" id="optionsGrid"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav-row">
+      <div style="font-size:12px;color:#aaa" id="answerHint">Select an answer above</div>
+      <button class="nav-btn btn-primary btn-disabled" id="nextBtn" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="score-screen" id="scoreScreen">
+    <div class="score-icon" id="scoreIcon">🎉</div>
+    <div class="score-headline" id="scoreHeadline">Knowledge Check Complete</div>
+    <div class="score-sub" id="scoreSub">Here's how you did.</div>
+    <div class="score-big" id="scoreBig">—</div>
+    <div class="score-label">correct out of 10</div>
+    <div class="score-dots" id="scoreDots"></div>
+    <div class="score-breakdown" id="scoreBreakdown"></div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <button class="restart-btn" onclick="restartQuiz()">↺ Retake</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    category: "Report Writing",
+    ergTest: "📹 Video Camera Test",
+    text: "A home visit note reads: 'Father was belligerent when worker arrived and displayed irrational behavior. He refused to answer questions and was clearly intoxicated. Children were left unsupervised while father was incapacitated.' Which revision applies the ERG's Video Camera Test?",
+    options: [
+      "Father was verbally hostile and uncooperative during the visit. He appeared to be under the influence. Children were found alone in the living room.",
+      "Father raised his voice during the visit and declined to answer several questions. Worker observed an odor of alcohol and slurred speech. Two children, ages 6 and 8, were in the living room without an adult present. Worker was unable to complete the full assessment and will reschedule.",
+      "Father became aggressive and refused to engage with the worker. Signs of intoxication were noted. Children were alone and appeared unsupervised. The situation requires follow-up.",
+      "Father did not cooperate with the home visit. He showed signs of substance use and children were found without supervision. Worker will escalate the case."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B passes the Video Camera Test: it describes only what was directly observable — specific physical signs, exact ages, the room — without interpreting motive or character.",
+      wrong: "The best answer is <strong>B</strong>. It's the only option that records what a camera would capture: specific physical signs (odor, slurred speech), exact ages, and precise location — not judgments like \"belligerent\" or \"incapacitated.\""
+    }
+  },
+  {
+    category: "Office Culture",
+    ergTest: null,
+    text: "After a difficult home visit, a social worker says: 'I'm so done with this family. The grandmother is impossible — she undermines everything we try to do. These people just don't want to change.' An ERG-aligned colleague responds. Which response is best?",
+    options: [
+      "I hear you. Do you want me to look at the case with you and see if there's something we haven't tried yet?",
+      "You should document that in the case file so the next worker knows what they're getting into.",
+      "Yeah, some families are just like that. You can only do so much.",
+      "I totally get it — this job is exhausting. Have you talked to your supervisor about it?"
+    ],
+    correct: 0,
+    feedback: {
+      right: "<strong>Right.</strong> Option A validates the frustration and immediately pivots to problem-solving — what hasn't been tried? That's ERG culture applied in conversation, not just in writing.",
+      wrong: "The best answer is <strong>A</strong>. It's the only response that validates the feeling AND redirects toward action. Option D acknowledges stress but goes nowhere. Option B would put deficit language into the permanent record. Option C reinforces giving up."
+    }
+  },
+  {
+    category: "Report Writing",
+    ergTest: "🔍 Source of the Problem Test",
+    text: "A case note reads: 'Family resides in substandard housing. The apartment is infested and the living conditions are deplorable. This reflects the family's disregard for their children's wellbeing.' Which revision best applies the ERG's Source of the Problem Test?",
+    options: [
+      "Family lives in poor housing conditions. The apartment has pest issues and is not well maintained. Family appears unable to prioritize the home environment.",
+      "Family resides in a unit with documented pest activity and visible structural concerns including water damage and inadequate ventilation. Worker will contact the city housing authority. Current conditions are the result of building maintenance failures, not family behavior.",
+      "The apartment has significant sanitation issues including pest infestation. Living conditions are below acceptable standards for child welfare purposes.",
+      "Family's housing is substandard. Conditions include pest activity and general disrepair. Family has been made aware and encouraged to address them."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B passes the Source of the Problem Test: it locates the problem in the building maintenance failure, not the family — and documents next steps that reflect that analysis.",
+      wrong: "The best answer is <strong>B</strong>. It's the only option that explicitly names where the problem actually lives: building maintenance failure, not family behavior. Every other option, even gently, implies the family owns the problem."
+    }
+  },
+  {
+    category: "External Communications",
+    ergTest: null,
+    text: "A DHS press release reads: 'DHS acknowledges that outcomes for at-risk children have been mixed. We remain committed to serving our most vulnerable populations and addressing the needs of troubled families throughout Philadelphia.' Which revision best applies the ERG?",
+    options: [
+      "DHS acknowledges that outcomes for children in our care have been inconsistent. We remain committed to serving our most in-need families and addressing challenges throughout Philadelphia.",
+      "DHS recognizes that children and families across Philadelphia are navigating complex circumstances, and that our systems must do more to meet those circumstances with precision, accountability, and care. We remain committed to this work.",
+      "DHS acknowledges mixed results in serving at-risk youth and troubled families. We are working to improve our response to the needs of vulnerable populations citywide.",
+      "DHS is committed to better outcomes for Philadelphia's most vulnerable children. We are reviewing our approach to serving high-needs families and will provide updates."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B removes all deficit framing — \"at-risk,\" \"vulnerable,\" \"troubled\" — and locates accountability in DHS's systems, not in the families. That's the ERG applied to public-facing language.",
+      wrong: "The best answer is <strong>B</strong>. It's the only option that removes ALL the deficit labels (at-risk, vulnerable, troubled) and names the system — DHS — as the actor responsible for meeting the circumstances, not describing the families as the problem."
+    }
+  },
+  {
+    category: "Direct Service",
+    ergTest: null,
+    text: "A service plan goal reads: 'Youth will learn to control impulsive behavior and comply with household rules. Benchmark: Zero incidents of defiance in 30 days.' Which revision best reflects the ERG's asset-based framing?",
+    options: [
+      "Goal: Youth will demonstrate improved self-regulation and compliance with household expectations. Benchmark: One or fewer behavioral incidents in 30 days.",
+      "Goal: Youth and caregiver will work together to identify household expectations and the youth's support needs, and develop strategies that account for both. Benchmark: Youth and caregiver report a shared understanding of expectations and one area of progress identified together within 30 days.",
+      "Goal: Youth will reduce impulsive behavior and increase compliance. Benchmark: Caregiver reports no defiance incidents over a 30-day period.",
+      "Goal: Youth will develop emotional regulation skills. Benchmark: Youth attends at least three counseling sessions in 30 days."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B is the only option that includes the caregiver as a co-actor, names both parties' needs, and measures shared understanding — not just youth compliance. Asset-based means the whole system, not just the youth, is doing the work.",
+      wrong: "The best answer is <strong>B</strong>. It's the only option that treats the youth and caregiver as co-participants, and measures a shared outcome rather than tracking compliance. The ERG's asset-based framing means both people in the plan have agency."
+    }
+  },
+  {
+    category: "Leadership",
+    ergTest: null,
+    text: "A deputy commissioner emails division directors: 'All staff are required to complete ERG training by Q3. This is mandatory and non-negotiable. Teams that fail to comply will be flagged in the next division review.' Which approach from a director best models ERG principles?",
+    options: [
+      "Forward the email verbatim to all staff with a note that attendance is required.",
+      "Send a separate message: 'Leadership has asked us to complete ERG training by Q3. I want to be upfront about that expectation. I also want you to come with curiosity, not just compliance — this training was built by people with real experience in our system, and I think it has something to offer all of us.'",
+      "Schedule the training without communicating about it ahead of time — staff will learn the content in the session.",
+      "Hold a pre-training meeting to let staff voice concerns about the mandate before attending."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B doesn't undercut the mandate but transforms how staff receive it — shifting from compliance to curiosity. Directors are ERG culture multipliers. How they communicate the training IS the first ERG lesson.",
+      wrong: "The best answer is <strong>B</strong>. Leadership messaging about ERG is itself ERG practice. Option B acknowledges the mandate honestly and adds meaning — 'built by people with real experience' — without inventing extra process. That's the supervisor's role."
+    }
+  },
+  {
+    category: "Policy & Data",
+    ergTest: "🔍 Source of the Problem Test",
+    text: "An evaluation report reads: 'Youth from broken homes were significantly less likely to complete the mentorship program. Fatherless households showed the worst outcomes across all measured domains.' Which revision most accurately and equitably presents these findings?",
+    options: [
+      "Youth from single-parent and disrupted households showed lower program completion rates. Single-parent households had the lowest outcomes across all domains.",
+      "Youth from households with a single caregiver or recent family disruption had lower completion rates than youth in two-caregiver households. This difference may reflect practical barriers — transportation, scheduling, caregiver capacity — rather than family structure as a causal factor. Further analysis is needed to identify what program supports could address these gaps.",
+      "Youth from non-traditional family structures completed the program at lower rates. Outcomes were weakest for youth without father figures.",
+      "Youth in single-parent households faced greater challenges in program completion. Fatherless households had the lowest measured outcomes."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B removes stigmatizing language (\"broken homes,\" \"fatherless\") AND applies the Source of the Problem Test to data: the disparity likely reflects barriers in the program, not deficits in family structure.",
+      wrong: "The best answer is <strong>B</strong>. It removes the deficit labels AND asks the equity question about the data itself: why does the gap exist? The answer isn't \"family structure\" — it's likely program barriers. That question is the ERG applied to research."
+    }
+  },
+  {
+    category: "Direct Service",
+    ergTest: "⏳ Wait & See Test",
+    text: "A case closing summary reads: 'Mother made progress but still struggles with basic parenting. Family achieved minimum compliance but long-term prognosis remains guarded.' Which closing summary best applies the ERG's Wait & See Test?",
+    options: [
+      "Case is closed. Mother demonstrated growth in several areas during the service period. Family met the conditions required for closure, though ongoing challenges remain.",
+      "Case is closed. During the service period, mother consistently attended parenting skills sessions, secured stable housing, and identified two community supports she plans to continue using. Closure criteria have been met. A referral to a community program has been made.",
+      "Case is closed. Mother made meaningful progress and the family is meeting minimum expectations. Some concerns remain but are manageable at this time.",
+      "Case closed. Mother improved over the service period. Family met all required benchmarks. No significant safety concerns at time of closure."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B passes the Wait & See Test: it documents what actually happened — specific, observable milestones — without predicting what will happen next. \"Prognosis remains guarded\" is a forecast the record doesn't earn.",
+      wrong: "The best answer is <strong>B</strong>. It's the only option that closes with specifics: attended sessions, secured housing, identified supports, made a referral. The Wait & See Test means stop where the evidence stops. No prognosis, no hedging — just what happened."
+    }
+  },
+  {
+    category: "Office Culture",
+    ergTest: null,
+    text: "A supervisor tells a new hire: 'Just write that the youth displays disruptive behavior during visits. That's standard. We can't spend too much time trying to figure out why they act the way they do — that's what therapy is for.' What does the ERG say about this guidance?",
+    options: [
+      "The guidance is appropriate — it's efficient and keeps documentation focused on observable behavior.",
+      "The guidance is partially correct: describing observable behavior is good ERG practice. But dismissing 'why' is a problem — the ERG expects documentation to note context and possible systemic factors even when the cause isn't fully known, because that context shapes how the next worker approaches the youth.",
+      "The guidance is wrong because 'disruptive behavior' is too vague. Staff should be told to use clinical terminology instead.",
+      "The guidance is appropriate for a first-year worker who doesn't yet have the experience to analyze behavior in documentation."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B gets the nuance: observable description is correct ERG practice. But \"we can't spend time on why\" is an ERG failure — context shapes what every subsequent reader does with that record.",
+      wrong: "The best answer is <strong>B</strong>. Describing what you observe is correct. But documentation that captures zero context about why — especially for a youth — sets up every future worker to see only \"disruptive\" with nothing to work with. That trail is the ERG's concern."
+    }
+  },
+  {
+    category: "Leadership",
+    ergTest: null,
+    text: "During a budget presentation, a senior leader says: 'The ERG is essentially a language guide that asks staff to be more politically correct. It's a nice-to-have in terms of our equity commitments, but it's not core to operations.' Which response most accurately represents the ERG's institutional value?",
+    options: [
+      "The ERG is more than a language guide — it's a training tool that helps staff communicate more professionally in documentation.",
+      "The ERG changes how staff observe, document, and make decisions about families. When documentation improves, data quality improves. When data quality improves, resource allocation improves. The ERG is not a language guide — it is a quality and accountability infrastructure embedded in every piece of writing that touches a child's life.",
+      "The ERG is a compliance framework designed to reduce liability and meet equity mandates. It does include language guidance but also addresses documentation standards across divisions.",
+      "The ERG is a cultural initiative that asks staff to reflect on their assumptions. It supports DHS's equity commitments and helps reduce bias in documentation."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B traces the full operational chain: documentation → data quality → resource allocation → outcomes for children. The ERG is quality infrastructure, not a style guide.",
+      wrong: "The best answer is <strong>B</strong>. It's the only answer that makes the operational case: ERG → better documentation → better data → better decisions. Options A, C, and D all concede some version of \"it's about language or culture\" — B rejects that framing entirely."
+    }
+  }
+];
+
+// Track per-category
+const CATS = {};
+QUESTIONS.forEach(q => { CATS[q.category] = CATS[q.category] || { total: 0, correct: 0 }; CATS[q.category].total++; });
+
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let answered = false;
+
+function startQuiz() {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'flex';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  answered = false;
+  document.getElementById('qNum').textContent = current + 1;
+
+  // Category + ERG test
+  const catEl = document.getElementById('qCat');
+  catEl.innerHTML = q.category;
+  if (q.ergTest) {
+    catEl.innerHTML += ` <span class="q-tag">${q.ergTest}</span>`;
+  }
+
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('answerHint').textContent = 'Select an answer above';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+
+  // ERG badge under header
+  const badge = document.getElementById('ergTestBadge');
+  badge.innerHTML = '';
+  if (q.ergTest) {
+    badge.innerHTML = `<div class="erg-test-badge">${q.ergTest}</div>`;
+    badge.style.margin = '16px 32px 0';
+    badge.style.display = 'block';
+  } else {
+    badge.style.display = 'none';
+  }
+
+  const btn = document.getElementById('nextBtn');
+  btn.textContent = current === QUESTIONS.length - 1 ? 'See Results →' : 'Next →';
+  btn.classList.add('btn-disabled');
+
+  document.getElementById('progressLabel').textContent = `${current + 1} / ${QUESTIONS.length}`;
+  document.getElementById('progressFill').style.width = `${(current / QUESTIONS.length) * 100}%`;
+
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'option-btn';
+    b.innerHTML = `<div class="option-letter">${letters[i]}</div><div class="option-text">${opt}</div>`;
+    b.addEventListener('click', () => selectAnswer(i));
+    grid.appendChild(b);
+  });
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  answers[current] = idx;
+  const q = QUESTIONS[current];
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.correct) b.classList.add('correct');
+    else if (i === idx && idx !== q.correct) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+
+  const fb = document.getElementById('feedback');
+  if (idx === q.correct) {
+    fb.className = 'feedback correct-fb';
+    fb.innerHTML = '✓ ' + q.feedback.right;
+  } else {
+    fb.className = 'feedback wrong-fb';
+    fb.innerHTML = '→ ' + q.feedback.wrong;
+  }
+
+  document.getElementById('answerHint').textContent = '';
+  document.getElementById('nextBtn').classList.remove('btn-disabled');
+}
+
+function nextQuestion() {
+  if (!answered) return;
+  current++;
+  if (current >= QUESTIONS.length) {
+    showScore();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showScore() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+
+  const score = answers.filter((a, i) => a === QUESTIONS[i].correct).length;
+  const total = QUESTIONS.length;
+
+  document.getElementById('scoreBig').textContent = `${score} / ${total}`;
+
+  let icon, headline, sub, msg;
+  if (score === total) {
+    icon = '🏆'; headline = 'Perfect Score!';
+    sub = 'You\'ve got the ERG — now teach it.';
+    msg = 'Every question correct. You\'ve internalized the three tests and know how to apply them across every documentation domain. The next step is making this second nature — and helping others get there too.';
+  } else if (score >= 8) {
+    icon = '⭐'; headline = 'Strong Command';
+    sub = 'Sharp ERG instincts across the board.';
+    msg = 'You landed on the equity-centered choice in almost every scenario. Look back at the ones that tripped you up — they\'re usually the cases where the ERG principle and the instinct to be "nice but vague" pull in different directions. ERG is precise, not soft.';
+  } else if (score >= 6) {
+    icon = '📘'; headline = 'Solid Foundation';
+    sub = 'Good instincts — a few areas to deepen.';
+    msg = 'You\'re applying the ERG well in most domains. The questions you missed probably had an answer that felt reasonable but stopped short of the full ERG principle. Check whether your near-misses were Video Camera, Source of the Problem, or Wait & See — that\'ll tell you which test to practice more.';
+  } else {
+    icon = '🌱'; headline = 'Building Your Practice';
+    sub = 'Keep the three tests handy.';
+    msg = 'ERG fluency comes with practice. The scenarios are hard because most of the wrong answers feel right — they\'re polished, they\'re professional, they just don\'t go far enough. Go back through the explanations and notice which test each question was testing. That\'s where the pattern will emerge.';
+  }
+
+  document.getElementById('scoreIcon').textContent = icon;
+  document.getElementById('scoreHeadline').textContent = headline;
+  document.getElementById('scoreSub').textContent = sub;
+  document.getElementById('scoreMsg').textContent = msg;
+
+  const dots = document.getElementById('scoreDots');
+  dots.innerHTML = '';
+  answers.forEach((a, i) => {
+    const d = document.createElement('div');
+    d.className = 'score-dot ' + (a === QUESTIONS[i].correct ? 'dot-correct' : 'dot-wrong');
+    d.textContent = i + 1;
+    dots.appendChild(d);
+  });
+
+  // Category breakdown
+  const catScores = {};
+  QUESTIONS.forEach((q, i) => {
+    if (!catScores[q.category]) catScores[q.category] = { total: 0, correct: 0 };
+    catScores[q.category].total++;
+    if (answers[i] === q.correct) catScores[q.category].correct++;
+  });
+  const breakdown = document.getElementById('scoreBreakdown');
+  breakdown.innerHTML = '';
+  Object.entries(catScores).forEach(([cat, { total, correct }]) => {
+    const tile = document.createElement('div');
+    tile.className = 'breakdown-tile';
+    tile.innerHTML = `<div class="bt-cat">${cat}</div><div class="bt-val">${correct}/${total}</div><div class="bt-sub">${correct === total ? '✓ All correct' : `${total - correct} to review`}</div>`;
+    breakdown.appendChild(tile);
+  });
+
+  document.getElementById('scoreScreen').style.display = 'block';
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  answered = false;
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'flex';
+  renderQuestion();
+}
+</script>
+
+
+</body></html>

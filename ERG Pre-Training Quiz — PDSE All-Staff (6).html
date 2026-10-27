@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Users/usenoe/Downloads/ERG_PreQuiz_Standalone_2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERG Pre-Training Quiz — PDSE All-Staff</title>
+<style>
+  :root {
+    --blue: #2176D2;
+    --dark-blue: #0C3D6E;
+    --light-blue: #E6F1FB;
+    --sky: #95CAFE;
+    --orange: #FFAB40;
+    --green: #4CAF50;
+    --dark: #1A2E35;
+    --gray: #595959;
+    --white: #FFFFFF;
+    --red: #D32F2F;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--dark-blue);
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--dark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-badge {
+    background: var(--orange);
+    color: var(--dark);
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .topbar-title { font-weight: 700; font-size: 14px; letter-spacing: .3px; }
+  .topbar-subtitle { color: var(--sky); font-size: 12px; }
+  .progress-wrap {
+    display: flex; align-items: center; gap: 10px; font-size: 12px; color: #aaa;
+  }
+  .progress-bar {
+    width: 140px; height: 6px; background: #333; border-radius: 3px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--orange); border-radius: 3px;
+    transition: width .4s ease;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.35);
+    width: 100%;
+    max-width: 860px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, var(--dark-blue) 0%, #1a4a7a 100%);
+    padding: 20px 32px 16px;
+    color: white;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .q-num {
+    background: var(--orange);
+    color: var(--dark);
+    font-weight: 800;
+    font-size: 18px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-meta { flex: 1; }
+  .q-category {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: white;
+  }
+
+  /* ── OPTIONS ── */
+  .options-grid {
+    padding: 24px 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 2px solid #dde6f0;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: all .18s ease;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--blue);
+    background: var(--light-blue);
+    transform: translateX(3px);
+  }
+  .option-letter {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--light-blue);
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid var(--blue);
+    transition: all .18s ease;
+  }
+  .option-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--dark);
+    padding-top: 3px;
+  }
+
+  /* States */
+  .option-btn.correct {
+    border-color: var(--green);
+    background: #E8F5E9;
+  }
+  .option-btn.correct .option-letter {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
+  }
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: #FFEBEE;
+    opacity: .75;
+  }
+  .option-btn.wrong .option-letter {
+    background: var(--red);
+    color: white;
+    border-color: var(--red);
+  }
+  .option-btn.dim {
+    opacity: .45;
+  }
+  .option-btn:disabled { cursor: default; transform: none; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    margin: 0 32px 20px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.55;
+    display: none;
+  }
+  .feedback.correct-fb {
+    background: #E8F5E9;
+    border-left: 4px solid var(--green);
+    color: #1B5E20;
+    display: block;
+  }
+  .feedback.wrong-fb {
+    background: #FFF8E1;
+    border-left: 4px solid var(--orange);
+    color: #5D4037;
+    display: block;
+  }
+  .feedback strong { font-weight: 700; }
+
+  /* ── NAV ── */
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px 24px;
+    border-top: 1px solid #eee;
+  }
+  .nav-btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: all .18s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--blue);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--dark-blue); }
+  .btn-secondary {
+    background: white;
+    color: var(--blue);
+    border: 2px solid var(--blue);
+  }
+  .btn-secondary:hover { background: var(--light-blue); }
+  .btn-disabled { opacity: .35; cursor: default; pointer-events: none; }
+
+  /* ── SCORE SCREEN ── */
+  .score-screen {
+    display: none;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.35);
+    width: 100%;
+    max-width: 860px;
+    padding: 48px 40px;
+    text-align: center;
+  }
+  .score-icon { font-size: 64px; margin-bottom: 16px; }
+  .score-headline {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--dark-blue);
+    margin-bottom: 8px;
+  }
+  .score-sub {
+    font-size: 16px;
+    color: var(--gray);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+  .score-big {
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-label { font-size: 14px; color: var(--gray); margin-bottom: 36px; }
+  .score-dots {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .score-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+  }
+  .dot-correct { background: var(--green); }
+  .dot-wrong   { background: var(--red); }
+  .score-msg {
+    background: var(--light-blue);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-size: 15px;
+    color: var(--dark-blue);
+    line-height: 1.6;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+  .restart-btn {
+    padding: 12px 32px;
+    background: var(--dark-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .restart-btn:hover { background: var(--blue); }
+
+  /* ── INTRO ── */
+  .intro-screen {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.35);
+    width: 100%; max-width: 860px;
+    overflow: hidden;
+  }
+  .intro-header {
+    background: linear-gradient(135deg, var(--dark-blue), #1a4a7a);
+    padding: 36px 40px;
+    color: white;
+    text-align: center;
+  }
+  .intro-header h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+  .intro-header p { font-size: 15px; color: var(--sky); }
+  .intro-body { padding: 32px 40px; }
+  .intro-body p { font-size: 15px; color: var(--dark); line-height: 1.6; margin-bottom: 16px; }
+  .intro-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; margin: 24px 0;
+  }
+  .intro-tile {
+    background: var(--light-blue);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .intro-tile .ti { font-size: 28px; margin-bottom: 6px; }
+  .intro-tile .tl { font-size: 13px; font-weight: 700; color: var(--dark-blue); }
+  .intro-tile .tv { font-size: 22px; font-weight: 900; color: var(--blue); }
+  .start-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 8px;
+    transition: background .18s;
+    letter-spacing: .3px;
+  }
+  .start-btn:hover { background: var(--dark-blue); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-badge">Pre-Quiz</div>
+    <div>
+      <div class="topbar-title">Equitable Reporting Guide</div>
+      <div class="topbar-subtitle">PDSE All-Staff Presentation · Knowledge Baseline</div>
+    </div>
+  </div>
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <span id="progressLabel">1 / 6</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- INTRO -->
+  <div class="intro-screen" id="introScreen">
+    <div class="intro-header">
+      <h1>Before We Begin — Quick Check</h1>
+      <p>Philadelphia Department of Human Services · ERG Training</p>
+    </div>
+    <div class="intro-body">
+      <p>This brief quiz helps us understand where the group is starting from. There are no wrong answers that count against you — every response helps us tailor the conversation.</p>
+      <p>You'll see six short scenarios drawn from real DHS documentation situations. For each one, pick the response that best reflects equitable, accurate writing practice.</p>
+      <div class="intro-grid">
+        <div class="intro-tile"><div class="ti">📝</div><div class="tl">Questions</div><div class="tv">6</div></div>
+        <div class="intro-tile"><div class="ti">⏱️</div><div class="tl">~45 sec each</div><div class="tv">~5 min</div></div>
+        <div class="intro-tile"><div class="ti">✅</div><div class="tl">Format</div><div class="tv">4-choice</div></div>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">Start the Quiz →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ CARD -->
+  <div class="card" id="quizCard" style="display:none">
+    <div class="card-header">
+      <div class="q-num" id="qNum">1</div>
+      <div class="q-meta">
+        <div class="q-category" id="qCat">Report Writing</div>
+        <div class="q-text" id="qText"></div>
+      </div>
+    </div>
+    <div class="options-grid" id="optionsGrid"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav-row">
+      <div style="font-size:12px;color:#aaa" id="answerHint">Select an answer above</div>
+      <button class="nav-btn btn-primary btn-disabled" id="nextBtn" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="score-screen" id="scoreScreen">
+    <div class="score-icon" id="scoreIcon">🎉</div>
+    <div class="score-headline" id="scoreHeadline">Baseline Complete</div>
+    <div class="score-sub" id="scoreSub">Here's where the group is starting.</div>
+    <div class="score-big" id="scoreBig">—</div>
+    <div class="score-label">correct out of 6</div>
+    <div class="score-dots" id="scoreDots"></div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <button class="restart-btn" onclick="restartQuiz()">↺ Retake</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    category: "Report Writing",
+    text: "A progress note reads: 'Mother failed to appear for the home visit. She has a history of non-compliance and the children were observed in a dirty home.' Which revision is most aligned with equitable, accurate documentation?",
+    options: [
+      "Mother did not come to the home visit. She has a non-compliance history and the home was unclean. Worker recommends monitoring.",
+      "Mother was unable to attend the home visit; worker will follow up to understand barriers. Home conditions included observable safety concerns requiring further assessment. Worker recommends continued outreach.",
+      "Mother missed the visit again. Home was poorly maintained. Her pattern of missing appointments continues. Worker will escalate.",
+      "Worker arrived to find the home unsatisfactory. Mother was absent without notice. Case should be flagged for review."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B removes judgment words like \"failed\" and \"non-compliance,\" observes conditions specifically, and leads with outreach rather than escalation — all core ERG principles.",
+      wrong: "The best answer is <strong>B</strong>. It replaces judgment language (\"failed,\" \"non-compliance\") with observable, specific description, and frames the next step as understanding barriers rather than escalation."
+    }
+  },
+  {
+    category: "Office Culture",
+    text: "In a PDSE team meeting, a colleague says: 'This family is a mess. The parents are in denial and the kids are out of control. I don't know why we keep trying.' What is the most ERG-aligned response from someone else in the room?",
+    options: [
+      "Stay quiet — it's not the right moment to challenge a colleague in a group setting.",
+      "Say: 'I hear you — these cases are hard. But can we look at what barriers this family might be hitting? That might help us figure out what they actually need from us.'",
+      "Remind the colleague that case files are confidential and this kind of language could be a liability.",
+      "Agree and suggest the case be reassigned to someone with more capacity."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B acknowledges the colleague's frustration while redirecting toward barrier-focused thinking — the ERG approach applies in conversation, not just in written documents.",
+      wrong: "The best answer is <strong>B</strong>. It validates the feeling without reinforcing the deficit framing, and turns the conversation toward what the family actually needs — ERG thinking in real time."
+    }
+  },
+  {
+    category: "Training Design",
+    text: "A current training objective reads: 'Staff will be able to identify problem behaviors in families and flag non-compliant clients for supervisory review.' Which revision best applies the ERG?",
+    options: [
+      "By the end of this training, staff will be able to identify concerning behaviors and escalate difficult clients for review.",
+      "By the end of this training, staff will be able to recognize behaviors that signal unmet needs and document specific, observable conditions that may require additional support or supervisory consultation.",
+      "By the end of this training, staff will be able to spot red flags in family cases and report clients who are not meeting expectations.",
+      "By the end of this training, staff will understand the importance of flagging non-cooperative family members for appropriate review."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B reframes \"problem behaviors\" as signals of unmet needs and replaces \"non-compliant\" with observable documentation — changing the entire orientation of what workers are looking for.",
+      wrong: "The best answer is <strong>B</strong>. It's the only option that reframes the worker's task: not flagging problems, but recognizing unmet needs — a fundamental ERG shift."
+    }
+  },
+  {
+    category: "Policy & Data",
+    text: "A data brief reads: 'The CWCA kinship program served high-risk families this quarter. Repeat offenders were disproportionately represented among families who failed to complete the program.' Which revision most accurately and equitably presents these findings?",
+    options: [
+      "The CWCA kinship program served families facing significant challenges this quarter. Families with prior DHS involvement were more likely to be among those who did not complete the program.",
+      "The CWCA kinship program served families navigating complex circumstances this quarter. Families with prior DHS involvement were disproportionately represented among those who did not complete the program — a pattern that may reflect unaddressed barriers to program participation rather than unwillingness to engage.",
+      "High-risk families were the primary population served by the CWCA kinship program. Non-completion rates were highest among repeat-contact families.",
+      "The kinship program reached its target population this quarter. Some families, particularly those with DHS history, struggled to complete the program as required."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B removes \"high-risk\" and \"repeat offenders,\" and — crucially — offers an alternative explanation for the pattern: barriers, not unwillingness. That's the ERG's Source of the Problem Test applied to data.",
+      wrong: "The best answer is <strong>B</strong>. It removes stigmatizing labels AND applies analytical equity: the disparity may reflect barriers, not family behavior. That reframe matters for how the data gets used."
+    }
+  },
+  {
+    category: "Direct Service",
+    text: "A technical assistance memo describes a youth as: 'oppositional and manipulative. He has refused all offered services and shows no motivation to improve his situation.' What is the most ERG-aligned way to reframe this?",
+    options: [
+      "Youth presents as resistant to services and shows limited engagement. He has declined offered services and appears unmotivated.",
+      "Youth has not engaged with any offered services to date and shows guarded, limited verbal communication in sessions. The underlying reasons for his disengagement have not yet been explored or documented.",
+      "Youth continues to refuse services and exhibits oppositional behaviors that may require a behavioral intervention.",
+      "Youth is not cooperating with the service plan. He has rejected all offers of support and shows no investment in change."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B removes diagnostic labels (\"oppositional,\" \"manipulative\"), describes what is actually observable, and names the gap: we don't know why yet. That's the Video Camera Test in action.",
+      wrong: "The best answer is <strong>B</strong>. Only B removes the clinical judgment labels entirely and adds the most important phrase: the underlying reasons \"have not yet been explored.\" That absence of exploration is the real documentation gap."
+    }
+  },
+  {
+    category: "Leadership",
+    text: "A director's email to staff before a quarterly review says: 'Make sure your documentation is tight. We don't want messy cases drawing attention. If a case is going nowhere, flag it so we don't get caught with a bad audit.' What is the most ERG-aligned supervisor response?",
+    options: [
+      "Forward the message to staff without comment — it came from leadership.",
+      "Add a note to staff: 'In addition to what the director shared, please make sure your notes reflect what you actually observed and what the family needs — not just what looks clean for the review.'",
+      "Respond to the director and suggest the language be revised before it reaches staff.",
+      "Hold a team huddle to process the message and discuss how to manage audit anxiety."
+    ],
+    correct: 1,
+    feedback: {
+      right: "<strong>Right.</strong> Option B doesn't contradict the director but adds the ERG layer: documentation serves families, not audits. Supervisors are ERG multipliers.",
+      wrong: "The best answer is <strong>B</strong>. It respects the chain of command while inserting the ERG principle that documentation is for families, not performance optics — exactly the role supervisors play in ERG culture change."
+    }
+  }
+];
+
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let answered = false;
+
+function startQuiz() {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'flex';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  answered = false;
+  document.getElementById('qNum').textContent = current + 1;
+  document.getElementById('qCat').textContent = q.category;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('answerHint').textContent = 'Select an answer above';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+
+  const btn = document.getElementById('nextBtn');
+  btn.textContent = current === QUESTIONS.length - 1 ? 'See Results →' : 'Next →';
+  btn.classList.add('btn-disabled');
+
+  // Progress
+  document.getElementById('progressLabel').textContent = `${current + 1} / ${QUESTIONS.length}`;
+  document.getElementById('progressFill').style.width = `${(current / QUESTIONS.length) * 100}%`;
+
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'option-btn';
+    b.innerHTML = `<div class="option-letter">${letters[i]}</div><div class="option-text">${opt}</div>`;
+    b.addEventListener('click', () => selectAnswer(i));
+    grid.appendChild(b);
+  });
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  answers[current] = idx;
+  const q = QUESTIONS[current];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.correct) b.classList.add('correct');
+    else if (i === idx && idx !== q.correct) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+
+  const fb = document.getElementById('feedback');
+  if (idx === q.correct) {
+    fb.className = 'feedback correct-fb';
+    fb.innerHTML = '✓ ' + q.feedback.right;
+  } else {
+    fb.className = 'feedback wrong-fb';
+    fb.innerHTML = '→ ' + q.feedback.wrong;
+  }
+
+  document.getElementById('answerHint').textContent = '';
+  document.getElementById('nextBtn').classList.remove('btn-disabled');
+}
+
+function nextQuestion() {
+  if (!answered) return;
+  current++;
+  if (current >= QUESTIONS.length) {
+    showScore();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showScore() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  const score = answers.filter((a, i) => a === QUESTIONS[i].correct).length;
+  const total = QUESTIONS.length;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('scoreBig').textContent = `${score} / ${total}`;
+  document.getElementById('progressFill').style.width = '100%';
+
+  let icon, headline, sub, msg;
+  if (score === total) {
+    icon = '🏆'; headline = 'Perfect Score!';
+    sub = "Strong baseline — now let’s deepen it.";
+    msg = "You came in with a solid grasp of equity-centered documentation. Today’s training will give you the frameworks and language to apply this consistently across every document type.";
+  } else if (score >= 4) {
+    icon = '⭐'; headline = 'Strong Baseline';
+    sub = "Good instincts — a few areas to sharpen.";
+    msg = "You’re already thinking equity-first in most scenarios. The ERG will give you specific tools and tests to apply this thinking precisely — especially in the areas where the answer was close.";
+  } else if (score >= 2) {
+    icon = '📘'; headline = 'Building Awareness';
+    sub = "Today’s training is right on time.";
+    msg = "You’ve got some equity instincts but the ERG will help you make them consistent. The three core tests you’ll learn today — Video Camera, Source of the Problem, Wait & See — give you a reliable framework for the scenarios where it felt uncertain.";
+  } else {
+    icon = '🌱'; headline = 'Great Starting Point';
+    sub = 'The ERG is exactly what you need.';
+    msg = "Today’s training is built for exactly this moment. You’ll leave with three practical tools that turn equity-centered documentation from an instinct into a practice — and you’ll see the difference by the time you try the post-quiz.";
+  }
+
+  document.getElementById('scoreIcon').textContent = icon;
+  document.getElementById('scoreHeadline').textContent = headline;
+  document.getElementById('scoreSub').textContent = sub;
+  document.getElementById('scoreMsg').textContent = msg;
+
+  const dots = document.getElementById('scoreDots');
+  dots.innerHTML = '';
+  answers.forEach((a, i) => {
+    const d = document.createElement('div');
+    d.className = 'score-dot ' + (a === QUESTIONS[i].correct ? 'dot-correct' : 'dot-wrong');
+    d.textContent = i + 1;
+    dots.appendChild(d);
+  });
+
+  document.getElementById('scoreScreen').style.display = 'block';
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  answered = false;
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'flex';
+  renderQuestion();
+}
+</script>
+
+
+</body></html>
